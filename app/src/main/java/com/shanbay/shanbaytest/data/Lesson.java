@@ -6,18 +6,24 @@ package com.shanbay.shanbaytest.data;
  */
 public class Lesson {
     private final String title;
-    private final String atricle;
+    private final String titleChinese;
+    private final String article;
 
-    public Lesson(String t,String a){
+    public Lesson(String t, String tC,String a){
         title = t;
-        atricle = a;
+        titleChinese = tC;
+        article = a;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getAtricle() {
-        return atricle;
+    public String getTitleChinese(){
+        return titleChinese;
+    }
+
+    public String getArticle() {
+        return article;
     }
 }

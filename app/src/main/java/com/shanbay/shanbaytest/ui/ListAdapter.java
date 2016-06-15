@@ -1,6 +1,7 @@
 package com.shanbay.shanbaytest.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +38,16 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListHolder> {
 
     @Override
     public void onBindViewHolder(ListAdapter.ListHolder holder, int position) {
-        holder.tv.setText(mLessonList.get(position).getTitle());
+        holder.tvTitle.setText(mLessonList.get(position).getTitle());
+        holder.tvIndex.setText((position+1)+"");
+        holder.tvChinese.setText(mLessonList.get(position).getTitleChinese());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(mContext,ArticleActivity.class);
+                mContext.startActivity(i);
+            }
+        });
     }
 
     @Override
@@ -46,10 +56,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListHolder> {
     }
 
     class ListHolder extends RecyclerView.ViewHolder{
-        TextView tv;
+        TextView tvIndex;
+        TextView tvTitle;
+        TextView tvChinese;
         public ListHolder(View itemView) {
             super(itemView);
-            tv = (TextView) itemView;
+            tvIndex = (TextView) itemView.findViewById(R.id.aty_list_adapter_index);
+            tvTitle = (TextView) itemView.findViewById(R.id.aty_list_adapter_title);
+            tvChinese = (TextView) itemView.findViewById(R.id.aty_list_adapter_chinese);
         }
     }
 }

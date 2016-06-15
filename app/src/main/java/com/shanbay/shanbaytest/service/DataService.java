@@ -43,9 +43,11 @@ public class DataService extends Service {
         int returnValue = START_NOT_STICKY ;
         LogUtils.d(TAG,"onStartCommand");
         boolean isTitle = intent.getBooleanExtra(INTENT_TITLE,false);
-        if(isTitle){
+        if(isTitle && !DataUtils.isTitlePrepared){
             executor.execute(titleTask);
         }
+
+        boolean isLevel = intent.getBooleanExtra(INTENT_LEVEL,false);
 
         return returnValue;
     }

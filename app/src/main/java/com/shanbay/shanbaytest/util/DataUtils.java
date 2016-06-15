@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
  * Created by Liujilong on 2016/6/15.
  * liujilong.me@gmail.com
  */
-public class DataUtils {
+public final class DataUtils {
 
     private DataUtils(){}
 
@@ -52,7 +52,9 @@ public class DataUtils {
         Scanner scanner = new Scanner(in);
         while(scanner.hasNext()){
             String title = scanner.nextLine();
-            list.add(new Lesson(title,null));
+            if(!scanner.hasNext()) break;
+            String chineseTitle = scanner.nextLine();
+            list.add(new Lesson(title,chineseTitle,null));
         }
         try {
             // sleep to simulate a time-consuming task
@@ -62,6 +64,7 @@ public class DataUtils {
         }
         scanner.close();
         sLessonList = list;
+        integerArray = new AtomicIntegerArray(list.size());
         isTitlePrepared = true;
     }
 

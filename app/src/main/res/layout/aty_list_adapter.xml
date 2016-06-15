@@ -1,12 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
+
+<RelativeLayout
+
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_margin="16dp"
-    android:layout_marginLeft="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginRight="8dp"
-    android:textColor="@color/listText"
-    android:textSize="@dimen/bigText"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:id="@+id/aty_list_adapter_index"
+        android:textColor="@color/listText"
+        android:textSize="@dimen/middleText"
+        android:layout_width="32dp"
+        android:layout_height="32dp" />
+    <TextView
+        android:id="@+id/aty_list_adapter_title"
+        android:layout_toRightOf="@+id/aty_list_adapter_index"
+        android:layout_toEndOf="@id/aty_list_adapter_index"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:textColor="@color/listText"
+        android:textSize="@dimen/middleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/aty_list_adapter_chinese"
+        android:layout_toRightOf="@+id/aty_list_adapter_index"
+        android:layout_toEndOf="@id/aty_list_adapter_index"
+        android:layout_below="@+id/aty_list_adapter_title"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:textColor="@color/listText"
+        android:textSize="@dimen/smallText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>
+

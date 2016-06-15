@@ -20,6 +20,8 @@
 
         <service android:name=".service.DataService" />
 
+        <activity android:name=".ui.ArticleActivity"/>
+
 
 
     </application>
