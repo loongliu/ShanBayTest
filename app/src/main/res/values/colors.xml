@@ -9,4 +9,7 @@
     <color name="listText">#6e6e6e</color>
 
     <color name="background">#e2e2e2</color>
+
+    <color name="textDay">#6a6a6a</color>
+    <color name="textBgDay">#fafafa</color>
 </resources>

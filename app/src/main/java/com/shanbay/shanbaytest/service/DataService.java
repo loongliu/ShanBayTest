@@ -7,6 +7,8 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 
+import com.shanbay.shanbaytest.eventbus.ArticleEvent;
+import com.shanbay.shanbaytest.eventbus.LevelEvent;
 import com.shanbay.shanbaytest.eventbus.TitleEvent;
 import com.shanbay.shanbaytest.util.DataUtils;
 import com.shanbay.shanbaytest.util.LogUtils;
@@ -28,6 +30,7 @@ public class DataService extends Service {
     public static final String INTENT_TITLE = "intent_title";
     public static final String INTENT_INDEX = "intent_index";
     public static final String INTENT_ARTICLE = "intent_article";
+    public static final String INTENT_ARTICLE_TITLE = "intent_article_title";
 
     private static Handler sHandler = new Handler(Looper.getMainLooper());
 
@@ -48,6 +51,18 @@ public class DataService extends Service {
         }
 
         boolean isLevel = intent.getBooleanExtra(INTENT_LEVEL,false);
+        if(isLevel && !DataUtils.isWordLevelPrepared){
+            executor.execute(levelTask);
+        }
+
+        boolean isArticle = intent.getBooleanExtra(INTENT_ARTICLE,false);
+        if(isArticle){
+            int index = intent.getIntExtra(INTENT_INDEX,-1);
+            String title = intent.getStringExtra(INTENT_ARTICLE_TITLE);
+            if(index!=-1 && !DataUtils.articlePrepared(index)){
+                executor.execute(new ArticleTask(index, title));
+            }
+        }
 
         return returnValue;
     }
@@ -66,11 +81,42 @@ public class DataService extends Service {
                 @Override
                 public void run() {
                     EventBus.getDefault().post(new TitleEvent("finish"));
-                    LogUtils.d(TAG, "EventBus event finish sent");
+                    LogUtils.d(TAG, "EventBus TitleEvent finish sent");
                 }
             });
         }
     };
+
+    Runnable levelTask = new Runnable() {
+        @Override
+        public void run() {
+            DataUtils.prepareLevel();
+            sHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    EventBus.getDefault().post(new LevelEvent("finish"));
+                    LogUtils.d(TAG, "EventBus LevelEvent finish sent");
+                }
+            });
+        }
+    };
+
+    class ArticleTask implements Runnable{
+        int index;
+        String title;
+        public ArticleTask(int i, String title){ index = i; this.title = title;}
+        @Override
+        public void run() {
+            DataUtils.prepareArticle(index, title);
+            sHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    EventBus.getDefault().post(new ArticleEvent(index));
+                    LogUtils.d(TAG, "EventBus LevelEvent finish sent");
+                }
+            });
+        }
+    }
 
 
 }

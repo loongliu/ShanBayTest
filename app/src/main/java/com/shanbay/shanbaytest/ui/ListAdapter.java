@@ -37,7 +37,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ListAdapter.ListHolder holder, int position) {
+    public void onBindViewHolder(ListAdapter.ListHolder holder, final int position) {
         holder.tvTitle.setText(mLessonList.get(position).getTitle());
         holder.tvIndex.setText((position+1)+"");
         holder.tvChinese.setText(mLessonList.get(position).getTitleChinese());
@@ -45,6 +45,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListHolder> {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(mContext,ArticleActivity.class);
+                i.putExtra(ArticleActivity.INTENT_INDEX,position);
+                i.putExtra(ArticleActivity.INTENT_TITLE,mLessonList.get(position).getTitle());
                 mContext.startActivity(i);
             }
         });

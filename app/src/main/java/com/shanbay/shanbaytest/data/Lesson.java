@@ -7,7 +7,7 @@ package com.shanbay.shanbaytest.data;
 public class Lesson {
     private final String title;
     private final String titleChinese;
-    private final String article;
+    private String article;
 
     public Lesson(String t, String tC,String a){
         title = t;
@@ -25,5 +25,9 @@ public class Lesson {
 
     public String getArticle() {
         return article;
+    }
+
+    public void setArticle(String a){
+        article = a;
     }
 }
