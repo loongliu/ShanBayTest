@@ -3,12 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true" >
         <shape>
-            <solid android:color="@color/startColor" />
+            <solid android:color="@color/colorPrimaryDark" />
         </shape>
     </item>
     <item>
         <shape>
-            <solid android:color="@color/endColor" />
+            <solid android:color="@color/colorPrimary" />
         </shape>
     </item>
 </selector>

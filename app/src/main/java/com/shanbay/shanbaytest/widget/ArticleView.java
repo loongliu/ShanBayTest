@@ -5,18 +5,23 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.shanbay.shanbaytest.APP;
 import com.shanbay.shanbaytest.R;
 import com.shanbay.shanbaytest.util.DimensionUtils;
+import com.shanbay.shanbaytest.util.LogUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Liujilong on 2016/6/16.
@@ -41,7 +46,11 @@ public class ArticleView extends View {
     private List<List<Integer>> mIndexOfWords;
     private List<List<Float>> mGapsOfLine;
 
+    private Map<String,Integer> mWordLevel;
+
     private Paint mTextPaint;
+    private Paint mHighLightPaint;
+    private RectF mHighLightRect;
 
     private static final int[] ATTRS = new int[] {
             android.R.attr.textSize,
@@ -50,6 +59,13 @@ public class ArticleView extends View {
 
 
     private Rect bound = new Rect();
+
+    boolean mHighLight = false;
+    int mHighLightLevel = 10;
+
+    String mHighLightWord;
+
+    int mLineHeight;
 
     public ArticleView(Context context) {
         this(context, null);
@@ -79,10 +95,20 @@ public class ArticleView extends View {
         mTextPaint.setColor(mTextColor);
         mTextPaint.setTextAlign(Paint.Align.LEFT);
 
+        mHighLightPaint = new Paint();
+        mHighLightPaint.setAntiAlias(true);
+        mHighLightPaint.setColor(0x5FFFFF00);
+
+        mHighLightRect = new RectF();
     }
 
     public void setTextColor(int color){
         mTextColor = color;
+        invalidate();
+    }
+
+    public void setWordLevel(Map<String,Integer> level){
+        mWordLevel = level;
         invalidate();
     }
 
@@ -108,6 +134,17 @@ public class ArticleView extends View {
 
         mTextPaint.setTextSize(mTextSize);
         requestLayout();
+    }
+
+    public boolean getHighLight(){
+        return mHighLight;
+    }
+
+    public void setHighLight(boolean high, int level){
+        mHighLight = high;
+        mHighLightLevel = level;
+        mHighLightWord = null;
+        invalidate();
     }
 
     @Override
@@ -147,7 +184,7 @@ public class ArticleView extends View {
         if(mArticleString == null || mWords == null || mIndexOfWords == null) return mVerticalGap;
         width -= (getPaddingLeft() + getPaddingRight());
         mTextPaint.getTextBounds("fg",0,2,bound);
-        int lineHeight = bound.height();
+        mLineHeight = bound.height();
         float height = mVerticalGap;
         for(List<String> para : mWords){
             float currentWidth = 0;
@@ -163,7 +200,7 @@ public class ArticleView extends View {
                     float gap = (width-currentWidth)/(i-lastIndex-1);
                     lastIndex = i;
                     gaps.add(gap);
-                    height += (lineHeight+mVerticalGap);
+                    height += (mLineHeight +mVerticalGap);
                     currentWidth = length;
                 }else{
                    currentWidth = w;
@@ -171,7 +208,7 @@ public class ArticleView extends View {
             }
             mIndexOfWords.add(indexOfWord);
             mGapsOfLine.add(gaps);
-            height+=(lineHeight+mVerticalGap);
+            height+=(mLineHeight +mVerticalGap);
         }
         return (int) height+mVerticalGap;
     }
@@ -179,7 +216,7 @@ public class ArticleView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         mTextPaint.getTextBounds("fg",0,2,bound);
-        int lineHeight = bound.height();
+        mLineHeight = bound.height();
 
         int height = mVerticalGap;
         for(int wordIndex = 0; wordIndex<mWords.size(); wordIndex++){
@@ -197,8 +234,8 @@ public class ArticleView extends View {
 
                 if(index < indexOfWord.size() &&  i == indexOfWord.get(index) ){
                     currentWidth = getPaddingLeft();
-                    height += (lineHeight + mVerticalGap);
-                    canvas.drawText(word,currentWidth,height+lineHeight,mTextPaint);
+                    height += (mLineHeight + mVerticalGap);
+                    drawText(canvas, word, currentWidth, height, currentWidth + length, height + mLineHeight);
                     index++;
                     if(index>=gaps.size()){
                         gapOfLine = 0;
@@ -206,11 +243,83 @@ public class ArticleView extends View {
                         gapOfLine = gaps.get(index);
                     }
                 }else{
-                    canvas.drawText(word,currentWidth,height+lineHeight,mTextPaint);
+                    drawText(canvas, word, currentWidth, height, currentWidth + length, height + mLineHeight);
                 }
                 currentWidth += (length+mHorizontalGap + gapOfLine);
             }
-            height += (lineHeight + mVerticalGap);
+            height += (mLineHeight + mVerticalGap);
         }
     }
+
+    private String getCurrentWord(float x, float y){
+        LogUtils.d("ArticleView", "x: " + x + " y: " + y);
+        int line = (int) (y/(mVerticalGap + mLineHeight));
+        int pase = 0;
+        for(int ii = 0; ii<mIndexOfWords.size(); ii++){
+            List<Integer> index = mIndexOfWords.get(ii);
+            if(index.size()<line){
+                line -= (index.size()+1);
+                pase++;
+            }else{
+                List<String> words = mWords.get(pase);
+                int i = line==0 ? 0 : index.get(line-1);
+                for(; i<words.size(); i++){
+                    String word = words.get(i);
+                    List<Float> gaps = mGapsOfLine.get(ii);
+                    float gap = line == gaps.size() ? 0 : gaps.get(line);
+                    float wordLength = mTextPaint.measureText(word)+ mHorizontalGap + gap;
+                    if(wordLength<x){
+                        x-=wordLength;
+                    }else{
+                        LogUtils.d("ArticleView","Word found: " + word);
+                        mHighLightWord = word;
+                        invalidate();
+                        return word;
+                    }
+                }
+            }
+        }
+        return "";
+    }
+
+    private void drawText(Canvas canvas, String word, float left, float top, float right, float bottom ){
+        Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
+        canvas.drawText(word, left, bottom-fontMetrics.bottom, mTextPaint);
+        if(shouldHighLight(word)) {
+            int radius = DimensionUtils.dp2px(1, mContext);
+            mHighLightRect.left = left-radius;
+            mHighLightRect.top = top-radius;
+            mHighLightRect.right = right+radius;
+            mHighLightRect.bottom = bottom+radius;
+            canvas.drawRoundRect(mHighLightRect, radius, radius, mHighLightPaint);
+        }
+    }
+
+    private boolean shouldHighLight(String word) {
+        return word.equals(mHighLightWord) || (mHighLight && mWordLevel != null && mWordLevel.containsKey(word) && mWordLevel.get(word) <= mHighLightLevel);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return mGestureDetector.onTouchEvent(event);
+    }
+
+    GestureDetector mGestureDetector = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener(){
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            String word = getCurrentWord(e.getX(), e.getY());
+            if(mWordLevel.containsKey(word)){
+                setHighLight(true, mWordLevel.get(word));
+            }else{
+                mHighLight = false;
+            }
+            return super.onSingleTapUp(e);
+        }
+    });
+
 }

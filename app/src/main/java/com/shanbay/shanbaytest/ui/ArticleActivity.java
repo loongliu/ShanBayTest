@@ -2,6 +2,7 @@ package com.shanbay.shanbaytest.ui;
 
 import android.content.Intent;
 import android.support.v4.widget.NestedScrollView;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -41,6 +42,12 @@ public class ArticleActivity extends BaseActivity {
         mProgress = (FrameLayout) findViewById(R.id.aty_article_progress);
         mScrollView = (NestedScrollView) findViewById(R.id.aty_article_scroll_view);
         tvArticle = (ArticleView) findViewById(R.id.aty_article_text);
+        findViewById(R.id.aty_article_light).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tvArticle.setHighLight(!tvArticle.getHighLight(),10);
+            }
+        });
     }
 
     @Override
@@ -85,7 +92,13 @@ public class ArticleActivity extends BaseActivity {
         mProgress.setVisibility(View.GONE);
         mScrollView.setVisibility(View.VISIBLE);
         tvArticle.setText(DataUtils.getLessonList().get(index).getArticle());
-        //tvArticle.setText("We can read of things that happened 5,000 years ago in the Near East");
+        tvArticle.setWordLevel(DataUtils.getWordLevel());
+        tvArticle.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+        });
     }
 
     @Override
@@ -107,4 +120,6 @@ public class ArticleActivity extends BaseActivity {
         if(event.getIndex()!=index) return;
         eventReceived();
     }
+
+
 }

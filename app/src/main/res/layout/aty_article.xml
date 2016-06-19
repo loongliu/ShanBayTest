@@ -27,7 +27,7 @@
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content" />
 
-            <Button
+            <TextView
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:id="@+id/aty_article_light"
@@ -37,7 +37,7 @@
                 android:padding="4dp"
                 android:background="@drawable/button"
                 android:text="@string/light"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/white"
                 android:textSize="16sp"/>
         </FrameLayout>
 
