@@ -12,6 +12,7 @@ import com.shanbay.shanbaytest.eventbus.LevelEvent;
 import com.shanbay.shanbaytest.service.DataService;
 import com.shanbay.shanbaytest.util.DataUtils;
 import com.shanbay.shanbaytest.util.LogUtils;
+import com.shanbay.shanbaytest.widget.ArticleView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -31,7 +32,7 @@ public class ArticleActivity extends BaseActivity {
     private TextView tvTitle;
     private FrameLayout mProgress;
     private NestedScrollView mScrollView;
-    private TextView tvArticle;
+    private ArticleView tvArticle;
 
     @Override
     protected void initView() {
@@ -39,7 +40,7 @@ public class ArticleActivity extends BaseActivity {
         tvTitle = (TextView) findViewById(R.id.aty_article_title);
         mProgress = (FrameLayout) findViewById(R.id.aty_article_progress);
         mScrollView = (NestedScrollView) findViewById(R.id.aty_article_scroll_view);
-        tvArticle = (TextView) findViewById(R.id.aty_article_text);
+        tvArticle = (ArticleView) findViewById(R.id.aty_article_text);
     }
 
     @Override
@@ -84,6 +85,7 @@ public class ArticleActivity extends BaseActivity {
         mProgress.setVisibility(View.GONE);
         mScrollView.setVisibility(View.VISIBLE);
         tvArticle.setText(DataUtils.getLessonList().get(index).getArticle());
+        //tvArticle.setText("We can read of things that happened 5,000 years ago in the Near East");
     }
 
     @Override

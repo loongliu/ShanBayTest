@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ShanBayTest</string>
+    <string name="light">高亮</string>
 </resources>

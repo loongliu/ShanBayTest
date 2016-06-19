@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <LinearLayout
+        <FrameLayout
             android:background="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
@@ -26,7 +26,20 @@
                 android:gravity="center_vertical"
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content" />
-        </LinearLayout>
+
+            <Button
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:id="@+id/aty_article_light"
+                android:layout_gravity="end|center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:background="@drawable/button"
+                android:text="@string/light"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="16sp"/>
+        </FrameLayout>
 
 
     </android.support.design.widget.AppBarLayout>
@@ -38,7 +51,7 @@
         android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <TextView
+        <com.shanbay.shanbaytest.widget.ArticleView
             android:padding="8dp"
             android:background="@color/textBgDay"
             android:textColor="@color/textDay"
@@ -47,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        </TextView>
+        </com.shanbay.shanbaytest.widget.ArticleView>
 
     </android.support.v4.widget.NestedScrollView>
     <FrameLayout

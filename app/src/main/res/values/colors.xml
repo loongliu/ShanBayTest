@@ -12,4 +12,11 @@
 
     <color name="textDay">#6a6a6a</color>
     <color name="textBgDay">#fafafa</color>
+
+
+    <color name="startColor">#4AA02C</color>
+    <color name="endColor">#348017</color>
+    <color name="disabledStartColor">#565051</color>
+    <color name="disabledEndColor">#736F6E</color>
+    <color name="borderColor">#254117</color>
 </resources>

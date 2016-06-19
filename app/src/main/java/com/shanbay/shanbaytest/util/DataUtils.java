@@ -134,6 +134,7 @@ public final class DataUtils {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        article = article.replace("  ", " ");
         lesson.setArticle(article);
         sLessonList.set(index, lesson);
         integerArray.set(index,1);
